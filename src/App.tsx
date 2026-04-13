@@ -1,11 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X, AlertTriangle } from 'lucide-react';
 
-import barImage from './assets/Bar.webp';
-import stayImage from './assets/Stay.webp';
-import mapImage from './assets/map-1.webp';
-import takoyakiSourceImage from './assets/takoyaki-source.webp';
-import takoyakiSaltImage from './assets/takoyaki-salt.webp';
+// Error Boundary Fallback
+const ErrorFallback = ({ error }: { error: Error }) => (
+  <div className="fixed inset-0 bg-black flex flex-col items-center justify-center p-10 text-center z-[9999]">
+    <AlertTriangle className="w-16 h-16 text-red-500 mb-6" />
+    <h1 className="text-2xl font-bold text-white mb-4">Application Error</h1>
+    <p className="text-gray-400 mb-8 max-w-md">{error.message}</p>
+    <button 
+      onClick={() => window.location.reload()} 
+      className="px-6 py-3 bg-white text-black rounded-sm font-medium"
+    >
+      Reload Page
+    </button>
+  </div>
+);
+
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError && this.state.error) {
+      return <ErrorFallback error={this.state.error} />;
+    }
+    return this.props.children;
+  }
+}
+
+const barImage = new URL('./assets/Bar.webp', import.meta.url).href;
+const stayImage = new URL('./assets/Stay.webp', import.meta.url).href;
+const mapImage = new URL('./assets/map-1.webp', import.meta.url).href;
+const takoyakiSourceImage = new URL('./assets/takoyaki-source.webp', import.meta.url).href;
+const takoyakiSaltImage = new URL('./assets/takoyaki-salt.webp', import.meta.url).href;
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
@@ -54,6 +100,14 @@ const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: st
 };
 
 export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
+  );
+}
+
+function AppContent() {
   const [currentView, setCurrentView] = useState<View>('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
