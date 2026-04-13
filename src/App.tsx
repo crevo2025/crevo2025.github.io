@@ -3,13 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X } from 'lucide-react';
 
-import { 
-  crevo_bar as barImage, 
-  crevo_stay as stayImage, 
-  crevo_map as mapImage, 
-  crevo_takoyaki_source as takoyakiSourceImage, 
-  crevo_takoyaki_salt as takoyakiSaltImage 
-} from './assets/images';
+import barImage from './assets/crevo-bar.webp';
+import stayImage from './assets/crevo-stay.webp';
+import mapImage from './assets/crevo-map.webp';
+import takoyakiSourceImage from './assets/crevo-takoyaki-source.webp';
+import takoyakiSaltImage from './assets/crevo-takoyaki-salt.webp';
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
