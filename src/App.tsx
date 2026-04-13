@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X } from 'lucide-react';
 
-const barImage = '/assets/Bar.webp';
-const stayImage = '/assets/Stay.webp';
-const mapImage = '/assets/map-1.webp';
-const takoyakiSourceImage = '/assets/input_file_0_png-1.webp';
-const takoyakiSaltImage = '/assets/input_file_1_png-1.webp';
+const barImage = 'assets/Bar.webp';
+const stayImage = 'assets/Stay.webp';
+const mapImage = 'assets/map-1.webp';
+const takoyakiSourceImage = 'assets/input_file_0_png-1.webp';
+const takoyakiSaltImage = 'assets/input_file_1_png-1.webp';
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
@@ -28,10 +27,7 @@ const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: st
   return (
     <div className={`relative overflow-hidden bg-[#222] ${className}`}>
       {!hasError && src ? (
-        <motion.img
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isLoaded ? 1 : 0 }}
-          transition={{ duration: 0.8 }}
+        <img
           onLoad={() => setIsLoaded(true)}
           onError={(e) => {
             console.error(`Failed to load image: ${src}`, e);
@@ -40,7 +36,7 @@ const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: st
           }}
           src={src}
           alt={alt}
-          className={`w-full h-full object-cover ${imgClassName}`}
+          className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
           referrerPolicy="no-referrer"
         />
       ) : (
@@ -129,64 +125,45 @@ export default function App() {
       </header>
 
       {/* Mobile Nav Overlay */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed inset-0 bg-white z-40 flex flex-col items-center justify-center gap-8 md:hidden"
-          >
-            {(['home', 'bar', 'stay', 'access'] as const).map((view) => (
-              <button
-                key={view}
-                onClick={() => showView(view)}
-                className="text-lg font-medium tracking-[0.3em] uppercase text-[#333]"
-              >
-                {view === 'access' ? 'Access & Info' : view}
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {isMenuOpen && (
+        <div className="fixed inset-0 bg-white z-40 flex flex-col items-center justify-center gap-8 md:hidden">
+          {(['home', 'bar', 'stay', 'access'] as const).map((view) => (
+            <button
+              key={view}
+              onClick={() => showView(view)}
+              className="text-lg font-medium tracking-[0.3em] uppercase text-[#333]"
+            >
+              {view === 'access' ? 'Access & Info' : view}
+            </button>
+          ))}
+        </div>
+      )}
 
       <main>
-        <AnimatePresence mode="wait">
-          {currentView === 'home' && (
-            <motion.div
-              key="home"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <section className="relative h-[100vh] flex flex-col justify-center items-center px-5 text-center overflow-hidden">
-                <div className="absolute inset-0 z-0">
-                  <SafeImage 
-                    src="https://images.unsplash.com/photo-1471922694854-ff1b63b20054?auto=format&fit=crop&w=1920&q=80" 
-                    alt="Sunset Sea" 
-                    className="w-full h-full opacity-60 brightness-75"
-                  />
-                  <div className="absolute inset-0 bg-black/30"></div>
+        {currentView === 'home' && (
+          <div key="home">
+            <section className="relative h-[100vh] flex flex-col justify-center items-center px-5 text-center overflow-hidden">
+              <div className="absolute inset-0 z-0">
+                <SafeImage 
+                  src="https://images.unsplash.com/photo-1471922694854-ff1b63b20054?auto=format&fit=crop&w=1920&q=80" 
+                  alt="Sunset Sea" 
+                  className="w-full h-full opacity-60 brightness-75"
+                />
+                <div className="absolute inset-0 bg-black/30"></div>
+              </div>
+              
+              <div className="relative z-10 text-white w-full max-w-4xl px-10 flex justify-center">
+                <div className="text-center border-t border-white/30 pt-12">
+                  <h1 className="text-2xl md:text-3xl font-light tracking-[0.3em] mb-8 leading-[2] drop-shadow-sm">
+                    延岡の夜にたこ焼きと<br />
+                    一杯の安らぎを
+                  </h1>
+                  <p className="text-[10px] md:text-xs font-light tracking-[0.4em] uppercase opacity-60">
+                    Crevo Takoyaki Bar & Stay
+                  </p>
                 </div>
-                
-                <div className="relative z-10 text-white w-full max-w-4xl px-10 flex justify-center">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 1.2 }}
-                    className="text-center border-t border-white/30 pt-12"
-                  >
-                    <h1 className="text-2xl md:text-3xl font-light tracking-[0.3em] mb-8 leading-[2] drop-shadow-sm">
-                      延岡の夜にたこ焼きと<br />
-                      一杯の安らぎを
-                    </h1>
-                    <p className="text-[10px] md:text-xs font-light tracking-[0.4em] uppercase opacity-60">
-                      Crevo Takoyaki Bar & Stay
-                    </p>
-                  </motion.div>
-                </div>
-              </section>
+              </div>
+            </section>
 
               <section className="py-40 px-5 text-center bg-[#1a1a1a]">
                 <div className="max-w-4xl mx-auto">
@@ -226,15 +203,12 @@ export default function App() {
                   </div>
                 </div>
               </section>
-            </motion.div>
+            </div>
           )}
 
           {currentView === 'bar' && (
-            <motion.div
+            <div
               key="bar"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
               className="pt-32 md:pt-40 pb-20 px-5 max-w-5xl mx-auto bg-[#1a1a1a]"
             >
               <span className="section-label text-center !text-[#888]">1F Floor</span>
@@ -441,15 +415,12 @@ export default function App() {
                 Open Hours: 19:00 - 23:00 (L.O. 22:30)<br />
                 TAKOKYAKI BAR CREVO
               </p>
-            </motion.div>
+            </div>
           )}
 
           {currentView === 'stay' && (
-            <motion.div
+            <div
               key="stay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
               className="pt-40 pb-20 px-5 max-w-3xl mx-auto text-center"
             >
               <span className="section-label">2F Floor</span>
@@ -489,15 +460,12 @@ export default function App() {
                   className="aspect-square rounded-sm opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700"
                 />
               </div>
-            </motion.div>
+            </div>
           )}
 
           {currentView === 'access' && (
-            <motion.div
+            <div
               key="access"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
               className="pt-40 pb-20 px-5 max-w-6xl mx-auto"
             >
               <div className="text-center mb-24">
@@ -574,12 +542,11 @@ export default function App() {
                       loading="lazy" 
                       referrerPolicy="no-referrer-when-downgrade"
                     ></iframe>
-                  </div>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+            </div>
+          </div>
+        )}
       </main>
 
       <footer className="py-10 w-full text-center text-[10px] tracking-[0.2em] text-[#aaaaaa] uppercase">
