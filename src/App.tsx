@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X } from 'lucide-react';
 import barImage from './assets/Bar.webp';
 import stayImage from './assets/Stay.webp';
@@ -14,17 +14,28 @@ const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: st
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
+  useEffect(() => {
+    if (!src) {
+      console.warn(`SafeImage: src is missing for ${alt}`);
+      setHasError(true);
+    } else {
+      setHasError(false);
+      setIsLoaded(false);
+    }
+  }, [src, alt]);
+
   return (
     <div className={`relative overflow-hidden bg-[#222] ${className}`}>
-      {!hasError ? (
+      {!hasError && src ? (
         <motion.img
           initial={{ opacity: 0 }}
           animate={{ opacity: isLoaded ? 1 : 0 }}
           transition={{ duration: 0.8 }}
           onLoad={() => setIsLoaded(true)}
-          onError={() => {
+          onError={(e) => {
+            console.error(`Failed to load image: ${src}`, e);
             setHasError(true);
-            setIsLoaded(true); // Stop spinner
+            setIsLoaded(true);
           }}
           src={src}
           alt={alt}
@@ -32,11 +43,12 @@ const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: st
           referrerPolicy="no-referrer"
         />
       ) : (
-        <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#444] uppercase tracking-widest">
-          Image Error
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-[10px] text-[#555] uppercase tracking-widest px-4 text-center gap-2">
+          <span className="opacity-50">Image Error</span>
+          <span className="text-[8px] opacity-30 break-all max-w-full">{alt}</span>
         </div>
       )}
-      {!isLoaded && !hasError && (
+      {!isLoaded && !hasError && src && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-6 h-6 border-2 border-white/10 border-t-white/30 rounded-full animate-spin"></div>
         </div>
