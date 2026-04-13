@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X } from 'lucide-react';
 
-const barImage = 'assets/Bar.webp';
-const stayImage = 'assets/Stay.webp';
-const mapImage = 'assets/map-1.webp';
-const takoyakiSourceImage = 'assets/input_file_0_png-1.webp';
-const takoyakiSaltImage = 'assets/input_file_1_png-1.webp';
+import barImage from './assets/Bar.webp';
+import stayImage from './assets/Stay.webp';
+import mapImage from './assets/map-1.webp';
+import takoyakiSourceImage from './assets/takoyaki-source.webp';
+import takoyakiSaltImage from './assets/takoyaki-salt.webp';
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
@@ -37,7 +37,6 @@ const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: st
           src={src}
           alt={alt}
           className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
-          referrerPolicy="no-referrer"
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center text-[10px] text-[#555] uppercase tracking-widest px-4 text-center gap-2">
