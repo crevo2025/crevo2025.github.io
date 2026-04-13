@@ -4,27 +4,39 @@ import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X }
 import barImage from './assets/Bar.webp';
 import stayImage from './assets/Stay.webp';
 import mapImage from './assets/map-1.webp';
-import takoyakiSourceImage from './assets/input_file_0,png-1.webp';
-import takoyakiSaltImage from './assets/input_file_1,png-1.webp';
+import takoyakiSourceImage from './assets/input_file_0_png-1.webp';
+import takoyakiSaltImage from './assets/input_file_1_png-1.webp';
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
 // Image component with loading state and safety
 const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: string; className?: string; imgClassName?: string }) => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [hasError, setHasError] = useState(false);
+
   return (
     <div className={`relative overflow-hidden bg-[#222] ${className}`}>
-      <motion.img
-        initial={{ opacity: 0 }}
-        animate={{ opacity: isLoaded ? 1 : 0 }}
-        transition={{ duration: 0.8 }}
-        onLoad={() => setIsLoaded(true)}
-        src={src}
-        alt={alt}
-        className={`w-full h-full object-cover ${imgClassName}`}
-        referrerPolicy="no-referrer"
-      />
-      {!isLoaded && (
+      {!hasError ? (
+        <motion.img
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isLoaded ? 1 : 0 }}
+          transition={{ duration: 0.8 }}
+          onLoad={() => setIsLoaded(true)}
+          onError={() => {
+            setHasError(true);
+            setIsLoaded(true); // Stop spinner
+          }}
+          src={src}
+          alt={alt}
+          className={`w-full h-full object-cover ${imgClassName}`}
+          referrerPolicy="no-referrer"
+        />
+      ) : (
+        <div className="absolute inset-0 flex items-center justify-center text-[10px] text-[#444] uppercase tracking-widest">
+          Image Error
+        </div>
+      )}
+      {!isLoaded && !hasError && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-6 h-6 border-2 border-white/10 border-t-white/30 rounded-full animate-spin"></div>
         </div>

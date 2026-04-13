@@ -10,7 +10,7 @@ const __dirname = path.dirname(__filename);
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: mode === 'production' ? '/crevo-site-/' : '/',
+    base: './',
     plugins: [react(), tailwindcss()],
     
     define: {
