@@ -159,7 +159,6 @@ export default function App() {
                           src={barImage} 
                           alt="Takoyaki Bar" 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s] grayscale opacity-80 hover:grayscale-0 hover:opacity-100"
-                          referrerPolicy="no-referrer"
                         />
                       </div>
                     <span className="section-label !text-left !text-[#888]">1F Floor</span>
@@ -173,7 +172,6 @@ export default function App() {
                           src={stayImage} 
                           alt="Stay" 
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[1.5s] grayscale opacity-80 hover:grayscale-0 hover:opacity-100"
-                          referrerPolicy="no-referrer"
                         />
                       </div>
                     <span className="section-label !text-left !text-[#888]">2F Floor</span>
@@ -203,7 +201,7 @@ export default function App() {
                   <div className="grid md:grid-cols-2 gap-8 md:gap-15 mb-15">
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
                       <div className="w-[120px] h-[120px] shrink-0 aspect-square overflow-hidden bg-[#222] rounded-sm shadow-sm">
-                        <img src={takoyakiSourceImage} alt="ソースたこ焼き" className="w-full h-full object-cover opacity-80" referrerPolicy="no-referrer" />
+                        <img src={takoyakiSourceImage} alt="ソースたこ焼き" className="w-full h-full object-cover opacity-80" />
                       </div>
                       <div className="flex-1 w-full border-b border-[#333] pb-2 flex justify-between items-end text-lg">
                         <span className="text-white">ソース (5個)</span>
@@ -212,7 +210,7 @@ export default function App() {
                     </div>
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
                       <div className="w-[120px] h-[120px] shrink-0 aspect-square overflow-hidden bg-[#222] rounded-sm shadow-sm">
-                        <img src={takoyakiSaltImage} alt="岩塩たこ焼き" className="w-full h-full object-cover opacity-80" referrerPolicy="no-referrer" />
+                        <img src={takoyakiSaltImage} alt="岩塩たこ焼き" className="w-full h-full object-cover opacity-80" />
                       </div>
                       <div className="flex-1 w-full border-b border-[#333] pb-2 flex justify-between items-end text-lg">
                         <span className="text-white">岩塩 (5個)</span>
@@ -503,7 +501,6 @@ export default function App() {
                       src={mapImage} 
                       alt="Map" 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-[2s]" 
-                      referrerPolicy="no-referrer" 
                     />
                   </div>
                 </div>
