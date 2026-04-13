@@ -1,13 +1,13 @@
-// GitHub Sync Trigger
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X } from 'lucide-react';
 
-import barImage from './assets/crevo-bar.webp';
-import stayImage from './assets/crevo-stay.webp';
-import mapImage from './assets/crevo-map.webp';
-import takoyakiSourceImage from './assets/crevo-takoyaki-source.webp';
-import takoyakiSaltImage from './assets/crevo-takoyaki-salt.webp';
+// Static image paths (from public/assets/)
+const barImage = "/assets/crevo-bar.webp";
+const stayImage = "/assets/crevo-stay.webp";
+const mapImage = "/assets/crevo-map.webp";
+const takoyakiSourceImage = "/assets/crevo-takoyaki-source.webp";
+const takoyakiSaltImage = "/assets/crevo-takoyaki-salt.webp";
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
