@@ -1,3 +1,4 @@
+// GitHub Sync Trigger
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X } from 'lucide-react';
