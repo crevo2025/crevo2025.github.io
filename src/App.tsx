@@ -47,11 +47,11 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
-const barImage = new URL('./assets/Bar.webp', import.meta.url).href;
-const stayImage = new URL('./assets/Stay.webp', import.meta.url).href;
-const mapImage = new URL('./assets/map-1.webp', import.meta.url).href;
-const takoyakiSourceImage = new URL('./assets/takoyaki-source.webp', import.meta.url).href;
-const takoyakiSaltImage = new URL('./assets/takoyaki-salt.webp', import.meta.url).href;
+const barImage = './Bar.webp';
+const stayImage = './Stay.webp';
+const mapImage = './map-1.webp';
+const takoyakiSourceImage = './takoyaki-source.webp';
+const takoyakiSaltImage = './takoyaki-salt.webp';
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
@@ -87,7 +87,7 @@ const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: st
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center text-[10px] text-[#555] uppercase tracking-widest px-4 text-center gap-2">
           <span className="opacity-50">Image Error</span>
-          <span className="text-[8px] opacity-30 break-all max-w-full">{alt}</span>
+          <span className="text-[8px] opacity-30 break-all max-w-full">{src || alt}</span>
         </div>
       )}
       {!isLoaded && !hasError && src && (
