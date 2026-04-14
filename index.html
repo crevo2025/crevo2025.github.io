@@ -8,6 +8,13 @@
   <body>
     <h1 style="color: red; font-size: 48px; text-align: center; margin-top: 100px;">SERVER IS WORKING</h1>
     <div id="root"></div>
+    <script>
+      console.log('Inline script executing');
+      const root = document.getElementById('root');
+      if (root) {
+        root.innerHTML = '<div style="color: green; font-size: 24px; text-align: center;">Inline JS is working!</div>';
+      }
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
