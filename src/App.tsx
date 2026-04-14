@@ -47,11 +47,11 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
-const barImage = './Bar.webp';
-const stayImage = './Stay.webp';
-const mapImage = './map-1.webp';
-const takoyakiSourceImage = './takoyaki-source.webp';
-const takoyakiSaltImage = './takoyaki-salt.webp';
+const barImage = '/bar.webp';
+const stayImage = '/stay.webp';
+const mapImage = '/map.webp';
+const takoyakiSourceImage = '/source.webp';
+const takoyakiSaltImage = '/salt.webp';
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
@@ -82,12 +82,13 @@ const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: st
           }}
           src={src}
           alt={alt}
+          referrerPolicy="no-referrer"
           className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
         />
       ) : (
         <div className="absolute inset-0 flex flex-col items-center justify-center text-[10px] text-[#555] uppercase tracking-widest px-4 text-center gap-2">
           <span className="opacity-50">Image Error</span>
-          <span className="text-[8px] opacity-30 break-all max-w-full">{src || alt}</span>
+          <span className="text-[8px] opacity-30 break-all max-w-full notranslate">{src || alt}</span>
         </div>
       )}
       {!isLoaded && !hasError && src && (
@@ -234,7 +235,7 @@ function AppContent() {
                     <div className="group cursor-pointer" onClick={() => showView('bar')}>
                       <SafeImage 
                         src={barImage} 
-                        alt="Takoyaki Bar" 
+                        alt="Bar" 
                         className="aspect-[4/5] mb-8 rounded-sm overflow-hidden"
                         imgClassName="group-hover:scale-110 transition-transform duration-[2s] grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100"
                       />
@@ -275,7 +276,7 @@ function AppContent() {
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 group">
                       <SafeImage 
                         src={takoyakiSourceImage} 
-                        alt="ソースたこ焼き" 
+                        alt="Takoyaki Source" 
                         className="w-[120px] h-[120px] shrink-0 rounded-sm shadow-sm overflow-hidden" 
                         imgClassName="group-hover:scale-110 transition-transform duration-700"
                       />
@@ -287,7 +288,7 @@ function AppContent() {
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 group">
                       <SafeImage 
                         src={takoyakiSaltImage} 
-                        alt="岩塩たこ焼き" 
+                        alt="Takoyaki Salt" 
                         className="w-[120px] h-[120px] shrink-0 rounded-sm shadow-sm overflow-hidden" 
                         imgClassName="group-hover:scale-110 transition-transform duration-700"
                       />
