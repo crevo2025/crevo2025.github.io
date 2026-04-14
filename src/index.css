@@ -1,48 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap');
 @import "tailwindcss";
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-}
-
-@layer base {
-  body {
-    @apply bg-[#f5f5f5] text-[#333333] leading-relaxed overflow-x-hidden;
-  }
-}
-
-@layer components {
-  .section-label {
-    @apply block text-[10px] tracking-[0.4em] text-[#aaaaaa] uppercase mb-10;
-  }
-
-  .btn {
-    @apply inline-block px-10 py-[15px] border border-[#eeeeee] text-[#333333] text-[10px] tracking-[0.3em] uppercase transition-all duration-500 mt-5 cursor-pointer;
-  }
-
-  .btn:hover {
-    @apply bg-[#333333] text-white border-[#333333];
-  }
-
-  .btn-dark {
-    @apply bg-[#333333] text-white border-[#333333] shadow-[0_4px_10px_rgba(0,0,0,0.1)];
-  }
-
-  .btn-dark:hover {
-    @apply bg-black border-black;
-  }
-
-  .menu-item {
-    @apply flex justify-between py-5 border-b border-[#eeeeee] text-base font-light tracking-wider;
-  }
-}
-
-/* Custom animations and specific styles from original code */
-.view-enter {
-  animation: fadeIn 1.5s ease-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
