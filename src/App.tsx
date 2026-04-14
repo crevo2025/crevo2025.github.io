@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X, AlertTriangle } from 'lucide-react';
 
-const barImage = `${import.meta.env.BASE_URL}assets/Bar.webp`;
-const stayImage = `${import.meta.env.BASE_URL}assets/Stay.webp`;
-const mapImage = `${import.meta.env.BASE_URL}assets/map-1.webp`;
-const takoyakiSourceImage = `${import.meta.env.BASE_URL}assets/takoyaki-source.webp`;
-const takoyakiSaltImage = `${import.meta.env.BASE_URL}assets/takoyaki-salt.webp`;
+import barImage from './assets/Bar.webp';
+import stayImage from './assets/Stay.webp';
+import mapImage from './assets/map-1.webp';
+import takoyakiSourceImage from './assets/takoyaki-source.webp';
+import takoyakiSaltImage from './assets/takoyaki-salt.webp';
 
 // Error Boundary Fallback
 const ErrorFallback = ({ error }: { error: Error }) => (
