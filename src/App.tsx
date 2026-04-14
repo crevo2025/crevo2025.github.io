@@ -58,30 +58,16 @@ type View = 'home' | 'bar' | 'stay' | 'access';
 // Image component with loading state and safety
 const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: string; className?: string; imgClassName?: string }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    setIsLoaded(false);
-    setHasError(false);
-  }, [src]);
 
   return (
     <div className={`relative overflow-hidden bg-[#222] ${className}`}>
-      {!hasError ? (
-        <img
-          onLoad={() => setIsLoaded(true)}
-          onError={() => setHasError(true)}
-          src={src}
-          alt={alt}
-          className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
-        />
-      ) : (
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-[10px] text-[#555] uppercase tracking-widest px-4 text-center gap-2">
-          <span className="opacity-50">Image Error</span>
-          <span className="text-[8px] opacity-30 break-all max-w-full">{alt}</span>
-        </div>
-      )}
-      {!isLoaded && !hasError && (
+      <img
+        onLoad={() => setIsLoaded(true)}
+        src={src}
+        alt={alt}
+        className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
+      />
+      {!isLoaded && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-6 h-6 border-2 border-white/10 border-t-white/30 rounded-full animate-spin"></div>
         </div>
