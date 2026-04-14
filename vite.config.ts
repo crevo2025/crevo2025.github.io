@@ -10,9 +10,11 @@ const __dirname = path.dirname(__filename);
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   return {
-    base: './',
+    base: '/crevo-site-/',
     plugins: [react(), tailwindcss()],
-    
+    build: {
+      assetsInlineLimit: 200000, // 200KB - Inline all images as Base64
+    },
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY),
     },
