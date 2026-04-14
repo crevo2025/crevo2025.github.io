@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X, AlertTriangle } from 'lucide-react';
 
+const barImage = `${import.meta.env.BASE_URL}assets/Bar.webp`;
+const stayImage = `${import.meta.env.BASE_URL}assets/Stay.webp`;
+const mapImage = `${import.meta.env.BASE_URL}assets/map-1.webp`;
+const takoyakiSourceImage = `${import.meta.env.BASE_URL}assets/takoyaki-source.webp`;
+const takoyakiSaltImage = `${import.meta.env.BASE_URL}assets/takoyaki-salt.webp`;
+
 // Error Boundary Fallback
 const ErrorFallback = ({ error }: { error: Error }) => (
   <div className="fixed inset-0 bg-black flex flex-col items-center justify-center p-10 text-center z-[9999]">
@@ -47,12 +53,6 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
-import barImage from './assets/Bar.webp';
-import stayImage from './assets/Stay.webp';
-import mapImage from './assets/map-1.webp';
-import takoyakiSourceImage from './assets/takoyaki-source.webp';
-import takoyakiSaltImage from './assets/takoyaki-salt.webp';
-
 type View = 'home' | 'bar' | 'stay' | 'access';
 
 // Image component with loading state and safety
@@ -82,6 +82,7 @@ const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: st
           }}
           src={src}
           alt={alt}
+          referrerPolicy="no-referrer"
           className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
         />
       ) : (
