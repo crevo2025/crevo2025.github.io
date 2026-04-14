@@ -1,45 +1,13 @@
 <!doctype html>
-<html lang="ja">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Crevo</title>
+    <title>Crevo - Takoyaki & Bar</title>
   </head>
   <body>
-    <h1 style="color: red; font-size: 48px; text-align: center; margin-top: 100px;">SERVER IS WORKING</h1>
     <div id="root"></div>
-    <script>
-      window.onerror = function(msg, url, lineNo, columnNo, error) {
-        const errorDiv = document.createElement('div');
-        errorDiv.style.color = 'orange';
-        errorDiv.style.fontSize = '20px';
-        errorDiv.style.textAlign = 'center';
-        errorDiv.style.marginTop = '20px';
-        errorDiv.innerHTML = 'Global Error: ' + msg + ' at ' + url + ':' + lineNo;
-        document.body.appendChild(errorDiv);
-        return false;
-      };
-      console.log('Inline script executing');
-      const root = document.getElementById('root');
-      if (root) {
-        root.innerHTML = '<div style="color: green; font-size: 24px; text-align: center;">Inline JS is working!</div>';
-      }
-    </script>
-    <script type="module" src="/src/main.tsx" id="main-script"></script>
-    <script type="module" src="/src/test.js"></script>
-    <script>
-      const script = document.getElementById('main-script');
-      script.onload = () => console.log('main.tsx script loaded');
-      script.onerror = () => {
-        const errorDiv = document.createElement('div');
-        errorDiv.style.color = 'purple';
-        errorDiv.style.fontSize = '24px';
-        errorDiv.style.textAlign = 'center';
-        errorDiv.style.marginTop = '20px';
-        errorDiv.innerHTML = 'FAILED TO LOAD /src/main.tsx (Purple)';
-        document.body.appendChild(errorDiv);
-      };
-    </script>
+    <script type="module" src="src/main.tsx"></script>
   </body>
 </html>
 
