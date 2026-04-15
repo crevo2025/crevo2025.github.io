@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X, AlertTriangle } from 'lucide-react';
+import { format } from 'date-fns';
 
 // Error Boundary Fallback
 const ErrorFallback = ({ error }: { error: Error }) => (
@@ -48,6 +49,10 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
 }
 
 import { IMAGES } from './assets';
+import { BookingCalendar } from './components/BookingCalendar';
+import { auth, db, handleFirestoreError, OperationType } from './firebase';
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth';
+import { doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
@@ -107,6 +112,57 @@ function AppContent() {
   const [currentView, setCurrentView] = useState<View>('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  const ADMIN_EMAIL = "takoyakicrevo@gmail.com";
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      setIsAdmin(user?.email === ADMIN_EMAIL && user?.emailVerified === true);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  };
+
+  const handleLogout = () => signOut(auth);
+
+  const toggleBooking = async (date: Date) => {
+    if (!isAdmin) return;
+    
+    const dateStr = format(date, 'yyyy-MM-dd');
+    const docRef = doc(db, 'bookings', dateStr);
+    
+    try {
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        const currentStatus = docSnap.data().status;
+        await setDoc(docRef, {
+          date: dateStr,
+          status: currentStatus === 'available' ? 'booked' : 'available',
+          updatedAt: new Date().toISOString()
+        });
+      } else {
+        // Default was booked (X), so first toggle makes it available (O)
+        await setDoc(docRef, {
+          date: dateStr,
+          status: 'available',
+          createdAt: new Date().toISOString()
+        });
+      }
+    } catch (error) {
+      handleFirestoreError(error, OperationType.WRITE, `bookings/${dateStr}`);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -188,7 +244,7 @@ function AppContent() {
         </div>
       )}
 
-      <main>
+      <main className="pb-20">
         {currentView === 'home' && (
           <div key="home">
             <section className="relative h-[100vh] flex flex-col justify-center items-center px-5 text-center overflow-hidden">
@@ -422,6 +478,14 @@ function AppContent() {
                           <div className="menu-item !border-none !py-0"><span>木挽ブルー</span><span>¥3,000</span></div>
                         </div>
                       </div>
+                      <div className="space-y-8">
+                        <h4 className="text-xs text-[#c08457] uppercase tracking-widest border-l-4 border-[#c08457] pl-4 mb-8 font-medium">Champagne</h4>
+                        <div className="space-y-4">
+                          <div className="menu-item !border-none !py-0"><span>ポンパドール</span><span>¥3,000</span></div>
+                          <div className="menu-item !border-none !py-0"><span>タコシャン</span><span>¥6,000</span></div>
+                          <div className="menu-item !border-none !py-0"><span>モエ</span><span>¥15,000</span></div>
+                        </div>
+                      </div>
                     </div>
                     <div className="space-y-15">
                       <div className="space-y-8">
@@ -470,44 +534,89 @@ function AppContent() {
           {currentView === 'stay' && (
             <div
               key="stay"
-              className="pt-40 pb-20 px-5 max-w-3xl mx-auto text-center"
+              className="pt-40 pb-20 px-5 max-w-5xl mx-auto"
             >
-              <span className="section-label">2F Floor</span>
-              <h1 className="text-3xl font-light tracking-[0.2em] mb-12 text-white">Stay (Coming Soon)</h1>
-              
-              <div className="bg-[#222] p-12 md:p-20 rounded-sm border border-white/10 mb-12">
-                <div className="w-16 h-1 w-16 bg-[#c08457] mx-auto mb-10"></div>
-                <h2 className="text-xl md:text-2xl font-light text-white mb-8 tracking-widest">現在準備中です</h2>
-                <p className="text-base md:text-lg font-light text-[#aaa] leading-[2] tracking-wider mb-10">
-                  延岡の夜をゆっくりと過ごしていただけるよう、<br className="hidden md:block" />
-                  2Fに民泊（ゲストハウス）を準備しております。<br />
-                  <br />
-                  オープン日が決まり次第、こちらのサイトや<br className="hidden md:block" />
-                  Instagramにてお知らせいたします。
-                </p>
-                <div className="flex justify-center gap-6">
-                  <a 
-                    href="https://www.instagram.com/takoyakibar.crevo/" 
-                    target="_blank" 
-                    className="flex items-center gap-3 text-white hover:text-[#c08457] transition-colors text-sm tracking-widest"
-                  >
-                    <Instagram className="w-5 h-5" />
-                    <span>Instagramで最新情報をチェック</span>
-                  </a>
-                </div>
+              <div className="text-center mb-16">
+                <span className="section-label">2F Floor</span>
+                <h1 className="text-3xl font-light tracking-[0.2em] text-white">Stay & Reservation</h1>
               </div>
+              
+              <div className="grid lg:grid-cols-2 gap-16 items-start">
+                {/* Left Side: Info */}
+                <div className="space-y-12 text-left">
+                  <div className="bg-[#222] p-10 md:p-12 rounded-sm border border-white/10">
+                    <div className="w-12 h-0.5 bg-[#c08457] mb-8"></div>
+                    <h2 className="text-2xl font-light text-white mb-6 tracking-widest">一日一組限定の隠れ家</h2>
+                    <p className="text-base font-light text-[#aaa] leading-[2] tracking-wider mb-8">
+                      延岡の静かな夜を、あなただけの空間で。<br />
+                      1FのBarでたこ焼きとお酒を楽しんだ後は、<br />
+                      そのまま2Fのプライベート空間でゆっくりとお休みいただけます。
+                    </p>
+                    
+                    <ul className="space-y-4 text-sm text-[#888] tracking-widest mb-10">
+                      <li className="flex items-center gap-3">
+                        <div className="w-1 h-1 bg-[#c08457] rounded-full"></div>
+                        <span>定員：最大4名様</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <div className="w-1 h-1 bg-[#c08457] rounded-full"></div>
+                        <span>チェックイン：19:00〜</span>
+                      </li>
+                      <li className="flex items-center gap-3">
+                        <div className="w-1 h-1 bg-[#c08457] rounded-full"></div>
+                        <span>チェックアウト：〜10:00</span>
+                      </li>
+                    </ul>
 
-              <div className="grid grid-cols-2 gap-4">
-                <SafeImage 
-                  src={IMAGES.STAY} 
-                  alt="Stay Room" 
-                  className="aspect-square rounded-sm opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700"
-                />
-                <SafeImage 
-                  src={IMAGES.STAY_ROOM_2} 
-                  alt="Room 2" 
-                  className="aspect-square rounded-sm opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700"
-                />
+                    <div className="pt-8 border-t border-white/5">
+                      <p className="text-xs text-[#666] leading-relaxed mb-6">
+                        ※ 現在、予約システムは表示のみとなっております。<br />
+                        実際の予約・お問い合わせはInstagramのDMよりお願いいたします。
+                      </p>
+                      <a 
+                        href="https://www.instagram.com/takoyakibar.crevo/" 
+                        target="_blank" 
+                        className="inline-flex items-center gap-3 text-white hover:text-[#c08457] transition-colors text-xs tracking-[0.2em] uppercase border border-white/20 px-6 py-3 rounded-sm"
+                      >
+                        <Instagram className="w-4 h-4" />
+                        <span>DMで問い合わせる</span>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <SafeImage 
+                      src={IMAGES.STAY} 
+                      alt="Stay Room" 
+                      className="aspect-[4/3] rounded-sm opacity-80 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700"
+                    />
+                    <SafeImage 
+                      src={IMAGES.STAY_ROOM_2} 
+                      alt="Room 2" 
+                      className="aspect-[4/3] rounded-sm opacity-80 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700"
+                    />
+                  </div>
+                </div>
+
+                {/* Right Side: Calendar */}
+                <div className="space-y-8 lg:pt-20">
+                  <div className="text-center lg:text-left">
+                    <h3 className="text-sm font-medium text-[#c08457] tracking-[0.3em] uppercase mb-4">Availability</h3>
+                    <p className="text-xs text-[#666] tracking-widest">オープン準備中のため、現在は全日満室表示となっております</p>
+                  </div>
+                  
+                  <BookingCalendar 
+                    onDateSelect={isAdmin ? toggleBooking : undefined}
+                    isAdmin={isAdmin}
+                  />
+
+                  <div className="bg-[#111] p-6 rounded-sm border border-white/5">
+                    <div className="flex items-center gap-4 text-[#888]">
+                      <Calendar className="w-5 h-5 text-[#c08457]" />
+                      <span className="text-xs tracking-widest">カレンダーから希望日を選択して空き状況を確認してください。</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -598,8 +707,19 @@ function AppContent() {
         )}
       </main>
 
-      <footer className="py-10 w-full text-center text-[10px] tracking-[0.2em] text-[#aaaaaa] uppercase">
-        &copy; CREVO 2025
+      <footer className="py-20 w-full text-center text-[10px] tracking-[0.2em] text-[#aaaaaa] uppercase flex flex-col items-center gap-6 border-t border-white/5 bg-[#1a1a1a]">
+        <div className="opacity-50">&copy; CREVO 2025</div>
+        <div className="flex items-center gap-4">
+          {isAdmin ? (
+            <button onClick={handleLogout} className="px-4 py-2 border border-white/10 rounded-sm hover:bg-white/5 transition-colors">
+              Logout (Admin Mode)
+            </button>
+          ) : (
+            <button onClick={handleLogin} className="opacity-20 hover:opacity-100 transition-opacity p-2">
+              Admin Login
+            </button>
+          )}
+        </div>
       </footer>
     </div>
   );

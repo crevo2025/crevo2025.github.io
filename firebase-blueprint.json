@@ -1,0 +1,32 @@
+{
+  "entities": {
+    "Booking": {
+      "title": "Booking",
+      "description": "A record of a booked date for the stay.",
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "The date that is booked (YYYY-MM-DD)."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["booked", "pending"],
+          "description": "The status of the booking."
+        },
+        "note": {
+          "type": "string",
+          "description": "Optional note about the booking."
+        }
+      },
+      "required": ["date", "status"]
+    }
+  },
+  "firestore": {
+    "/bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Collection of booked dates."
+    }
+  }
+}

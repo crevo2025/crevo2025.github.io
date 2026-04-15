@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: bookings
+    // Document ID: auto-generated or date string
+    // Fields:
+    //   - date: string (required, YYYY-MM-DD)
+    //   - status: string (required, 'booked' | 'pending')
+    //   - note: string (optional)
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (request.auth.token.email == "takoyakicrevo@gmail.com" && request.auth.token.email_verified == true);
+    }
+
+    function isValidBooking(data) {
+      return data.keys().hasAll(['date', 'status']) &&
+             data.date is string && data.date.matches("^\\d{4}-\\d{2}-\\d{2}$") &&
+             data.status in ['booked', 'pending'] &&
+             (!('note' in data) || (data.note is string && data.note.size() < 500));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /bookings/{bookingId} {
+      // Anyone can see the booking status
+      allow read: if true;
+      
+      // Only admin can manage bookings
+      allow create: if isAdmin() && isValidBooking(request.resource.data);
+      allow update: if isAdmin() && isValidBooking(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
