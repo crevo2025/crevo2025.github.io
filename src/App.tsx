@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X, AlertTriangle } from 'lucide-react';
 
-import barImage from './assets/bar.webp';
-import stayImage from './assets/stay.webp';
-import mapImage from './assets/map.webp';
-import takoyakiSourceImage from './assets/takosource.webp';
-import takoyakiSaltImage from './assets/takosalt.webp';
-
 // Error Boundary Fallback
 const ErrorFallback = ({ error }: { error: Error }) => (
   <div className="fixed inset-0 bg-black flex flex-col items-center justify-center p-10 text-center z-[9999]">
@@ -53,54 +47,48 @@ class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundarySta
   }
 }
 
+import { IMAGES } from './assets';
+
 type View = 'home' | 'bar' | 'stay' | 'access';
 
-// Smart Image component that tries multiple path strategies
+// Image component with loading state and safety
 const SafeImage = ({ src, alt, className, imgClassName }: { src: string; alt: string; className?: string; imgClassName?: string }) => {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [errorCount, setErrorCount] = useState(0);
+  const [hasError, setHasError] = useState(false);
 
-  // Try different path strategies if the initial one fails
-  const getSrc = () => {
-    if (!src) return `https://picsum.photos/seed/${alt}/800/600`;
-    if (src.startsWith('data:') || src.startsWith('http')) return src;
-    
-    // Strategy 0: Use the provided src (Vite's resolved path)
-    if (errorCount === 0) return src;
-    
-    // Strategy 1: Try adding the base URL manually if it's missing
-    if (errorCount === 1) {
-      const base = import.meta.env.BASE_URL || '/';
-      const cleanSrc = src.startsWith('/') ? src.slice(1) : src;
-      const cleanBase = base.endsWith('/') ? base : `${base}/`;
-      return `${cleanBase}${cleanSrc}`;
+  useEffect(() => {
+    if (!src) {
+      console.warn(`SafeImage: src is missing for ${alt}`);
+      setHasError(true);
+    } else {
+      setHasError(false);
+      setIsLoaded(false);
     }
-    
-    // Strategy 2: Try a relative path from the current location
-    if (errorCount === 2) {
-      const fileName = src.split('/').pop();
-      return `./assets/${fileName}`;
-    }
-
-    // Final Fallback: High-quality placeholder
-    return `https://picsum.photos/seed/${alt}/800/600`;
-  };
+  }, [src, alt]);
 
   return (
     <div className={`relative overflow-hidden bg-[#222] ${className}`}>
-      <img
-        src={getSrc()}
-        alt={alt}
-        onLoad={() => setIsLoaded(true)}
-        onError={() => {
-          console.warn(`Image failed (attempt ${errorCount}):`, getSrc());
-          setErrorCount(prev => prev + 1);
-        }}
-        className={`w-full h-full object-cover transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
-      />
-      {!isLoaded && errorCount < 3 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-[#1a1a1a]">
-          <div className="w-5 h-5 border-2 border-white/10 border-t-white/40 rounded-full animate-spin"></div>
+      {!hasError && src ? (
+        <img
+          onLoad={() => setIsLoaded(true)}
+          onError={(e) => {
+            console.error(`Failed to load image: ${src}`, e);
+            setHasError(true);
+            setIsLoaded(true);
+          }}
+          src={src}
+          alt={alt}
+          className={`w-full h-full object-cover transition-opacity duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${imgClassName}`}
+        />
+      ) : (
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-[10px] text-[#555] uppercase tracking-widest px-4 text-center gap-2">
+          <span className="opacity-50">Image Error</span>
+          <span className="text-[8px] opacity-30 break-all max-w-full">{alt}</span>
+        </div>
+      )}
+      {!isLoaded && !hasError && src && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-white/10 border-t-white/30 rounded-full animate-spin"></div>
         </div>
       )}
     </div>
@@ -206,7 +194,7 @@ function AppContent() {
             <section className="relative h-[100vh] flex flex-col justify-center items-center px-5 text-center overflow-hidden">
               <div className="absolute inset-0 z-0">
                 <SafeImage 
-                  src="https://images.unsplash.com/photo-1471922694854-ff1b63b20054?auto=format&fit=crop&w=1920&q=80" 
+                  src={IMAGES.HERO_SUNSET} 
                   alt="Sunset Sea" 
                   className="w-full h-full opacity-60 brightness-75"
                 />
@@ -241,7 +229,7 @@ function AppContent() {
                 <div className="grid md:grid-cols-2 gap-12 md:gap-24">
                     <div className="group cursor-pointer" onClick={() => showView('bar')}>
                       <SafeImage 
-                        src={barImage} 
+                        src={IMAGES.BAR} 
                         alt="Takoyaki Bar" 
                         className="aspect-[4/5] mb-8 rounded-sm overflow-hidden"
                         imgClassName="group-hover:scale-110 transition-transform duration-[2s] grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100"
@@ -253,7 +241,7 @@ function AppContent() {
                   
                     <div className="group cursor-pointer" onClick={() => showView('stay')}>
                       <SafeImage 
-                        src={stayImage} 
+                        src={IMAGES.STAY} 
                         alt="Stay" 
                         className="aspect-[4/5] mb-8 rounded-sm overflow-hidden"
                         imgClassName="group-hover:scale-110 transition-transform duration-[2s] grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100"
@@ -282,7 +270,7 @@ function AppContent() {
                   <div className="grid md:grid-cols-2 gap-8 md:gap-15 mb-15">
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 group">
                       <SafeImage 
-                        src={takoyakiSourceImage} 
+                        src={IMAGES.TAKOYAKI_SOURCE} 
                         alt="ソースたこ焼き" 
                         className="w-[120px] h-[120px] shrink-0 rounded-sm shadow-sm overflow-hidden" 
                         imgClassName="group-hover:scale-110 transition-transform duration-700"
@@ -294,7 +282,7 @@ function AppContent() {
                     </div>
                     <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 group">
                       <SafeImage 
-                        src={takoyakiSaltImage} 
+                        src={IMAGES.TAKOYAKI_SALT} 
                         alt="岩塩たこ焼き" 
                         className="w-[120px] h-[120px] shrink-0 rounded-sm shadow-sm overflow-hidden" 
                         imgClassName="group-hover:scale-110 transition-transform duration-700"
@@ -511,12 +499,12 @@ function AppContent() {
 
               <div className="grid grid-cols-2 gap-4">
                 <SafeImage 
-                  src={stayImage} 
+                  src={IMAGES.STAY} 
                   alt="Stay Room" 
                   className="aspect-square rounded-sm opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700"
                 />
                 <SafeImage 
-                  src="https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=800&q=80" 
+                  src={IMAGES.STAY_ROOM_2} 
                   alt="Room 2" 
                   className="aspect-square rounded-sm opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700"
                 />
@@ -573,7 +561,7 @@ function AppContent() {
                 <div className="flex justify-center py-8">
                   <div className="group w-full max-w-3xl aspect-[16/9] rounded-sm border border-white/10 overflow-hidden">
                     <SafeImage 
-                      src={mapImage} 
+                      src={IMAGES.MAP} 
                       alt="Map" 
                       className="w-full h-full"
                       imgClassName="group-hover:scale-110 transition-transform duration-[3s]"
