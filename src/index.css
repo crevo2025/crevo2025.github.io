@@ -3,37 +3,64 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  
+  /* Warm Gray & Orange Theme */
+  --bg-main: #2a2a2a;         /* Deep warm gray */
+  --bg-surface: #333333;      /* Slightly lighter gray for cards */
+  --bg-dark: #1a1a1a;         /* Darkest gray for contrast */
+  --text-primary: #e67e22;    /* Warm orange for main text */
+  --text-secondary: #f39c12;  /* Golden orange for secondary text */
+  --text-muted: #888888;      /* Muted gray for labels */
+  --border-color: rgba(230, 126, 34, 0.2); /* Orange-tinted borders */
+  --accent: #e67e22;          /* Brand orange */
+
+  /* Original Bright Theme (Backup)
+  --bg-main: #fdfcfb;
+  --bg-surface: #ffffff;
+  --bg-dark: #f5f5f5;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --border-color: rgba(0, 0, 0, 0.05);
+  --accent: #c08457;
+  */
 }
 
 @layer base {
   body {
-    @apply bg-[#f5f5f5] text-[#333333] leading-relaxed overflow-x-hidden;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    @apply leading-relaxed overflow-x-hidden transition-colors duration-500;
   }
 }
 
 @layer components {
   .section-label {
-    @apply block text-[10px] tracking-[0.4em] text-[#aaaaaa] uppercase mb-10;
+    color: #ffffff;
+    @apply block text-[10px] tracking-[0.4em] uppercase mb-10 opacity-80;
   }
 
   .btn {
-    @apply inline-block px-10 py-[15px] border border-[#eeeeee] text-[#333333] text-[10px] tracking-[0.3em] uppercase transition-all duration-500 mt-5 cursor-pointer;
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+    @apply inline-block px-10 py-[15px] border text-[10px] tracking-[0.3em] uppercase transition-all duration-500 mt-5 cursor-pointer;
   }
 
   .btn:hover {
-    @apply bg-[#333333] text-white border-[#333333];
+    background-color: var(--text-primary);
+    color: var(--bg-main);
   }
 
   .btn-dark {
-    @apply bg-[#333333] text-white border-[#333333] shadow-[0_4px_10px_rgba(0,0,0,0.1)];
-  }
-
-  .btn-dark:hover {
-    @apply bg-black border-black;
+    background-color: var(--text-primary);
+    color: var(--bg-main);
+    @apply border-none shadow-[0_4px_10px_rgba(0,0,0,0.1)];
   }
 
   .menu-item {
-    @apply flex justify-between py-5 border-b border-[#eeeeee] text-base font-light tracking-wider;
+    border-color: var(--border-color);
+    color: var(--text-primary);
+    @apply flex justify-between py-5 border-b text-base font-light tracking-wider;
   }
 }
 
