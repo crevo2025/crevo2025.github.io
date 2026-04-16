@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Instagram, MapPin, Clock, Calendar, ExternalLink, Menu as MenuIcon, X, AlertTriangle, Mail } from 'lucide-react';
 import { format } from 'date-fns';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Error Boundary Fallback
 const ErrorFallback = ({ error }: { error: Error }) => (
@@ -54,6 +54,8 @@ import { BookingCalendar } from './components/BookingCalendar';
 import { auth, db, handleFirestoreError, OperationType } from './firebase';
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, User } from 'firebase/auth';
 import { doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
+
+console.log("App.tsx module loading...");
 
 type View = 'home' | 'bar' | 'stay' | 'access';
 
@@ -179,7 +181,11 @@ function AppContent() {
     window.scrollTo(0, 0);
   };
 
-  const [selectedImage, setSelectedImage] = React.useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+  useEffect(() => {
+    console.log("App initialized with view:", currentView);
+  }, []);
 
   const galleryImages = [
     IMAGES.STAY,
